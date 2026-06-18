@@ -1,7 +1,8 @@
 spring:
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/r_report_db
+  mongodb:
+    host: localhost
+    port: 27017
+    database: r_report_db
 
 server:
   port: 8084
@@ -10,6 +11,6 @@ bootcamp:
   service:
     base-url: http://localhost:8082
 
-persona:
+person:
   service:
     base-url: http://localhost:8083

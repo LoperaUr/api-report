@@ -29,13 +29,8 @@ public class ReportUseCase implements ReportServicePort {
 
     @Override
     public Mono<Report> enrollPerson(Long bootcampId, PersonInfo personInfo) {
-        return reportPersistencePort.findByBootcampId(bootcampId)
-                .switchIfEmpty(Mono.error(new BusinessException(ErrorMessages.REPORT_NOT_FOUND)))
-                .flatMap(report -> {
-                    report.getEnrolledPersons().add(personInfo);
-                    report.setEnrolledPersonCount(report.getEnrolledPersons().size());
-                    return reportPersistencePort.save(report);
-                });
+        return reportPersistencePort.addPersonToReport(bootcampId, personInfo)
+                .switchIfEmpty(Mono.error(new BusinessException(ErrorMessages.REPORT_NOT_FOUND)));
     }
 
     @Override

@@ -10,5 +10,7 @@ public interface ReportPersistencePort {
 
     Mono<Report> findByBootcampId(Long bootcampId);
 
+    Mono<Report> addPersonToReport(Long bootcampId, PersonInfo personInfo);
+
     Mono<Report> findTopByOrderByEnrolledPersonCountDesc();
 }
