@@ -15,6 +15,7 @@ public class RouterRest {
         return RouterFunctions.route()
                 .path("/api/reports", builder -> builder
                         .POST("", handler::save)
+                        .PATCH("/{bootcampId}/enroll", handler::enrollPerson)
                         .GET("/top-bootcamp", handler::findBootcampWithMostEnrolledPersons))
                 .build();
     }

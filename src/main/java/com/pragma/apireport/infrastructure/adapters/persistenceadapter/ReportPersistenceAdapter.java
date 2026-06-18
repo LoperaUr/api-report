@@ -22,6 +22,12 @@ public class ReportPersistenceAdapter implements ReportPersistencePort {
     }
 
     @Override
+    public Mono<Report> findByBootcampId(Long bootcampId) {
+        return reportRepository.findByBootcampId(bootcampId)
+                .map(reportDocumentMapper::toDomain);
+    }
+
+    @Override
     public Mono<Report> findTopByOrderByEnrolledPersonCountDesc() {
         return reportRepository.findTopByOrderByEnrolledPersonCountDesc()
                 .map(reportDocumentMapper::toDomain);

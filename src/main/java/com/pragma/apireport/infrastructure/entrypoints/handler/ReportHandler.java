@@ -1,6 +1,7 @@
 package com.pragma.apireport.infrastructure.entrypoints.handler;
 
 import com.pragma.apireport.domain.api.ReportServicePort;
+import com.pragma.apireport.infrastructure.entrypoints.dto.EnrollRequest;
 import com.pragma.apireport.infrastructure.entrypoints.dto.ReportRequest;
 import com.pragma.apireport.infrastructure.entrypoints.mapper.ReportMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,17 @@ public class ReportHandler {
         return request.bodyToMono(ReportRequest.class)
                 .map(reportMapper::toDomain)
                 .flatMap(reportServicePort::save)
+                .map(reportMapper::toResponse)
+                .flatMap(dto -> ServerResponse.ok()
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .bodyValue(dto));
+    }
+
+    public Mono<ServerResponse> enrollPerson(ServerRequest request) {
+        Long bootcampId = Long.valueOf(request.pathVariable("bootcampId"));
+        return request.bodyToMono(EnrollRequest.class)
+                .map(reportMapper::toPersonInfo)
+                .flatMap(personInfo -> reportServicePort.enrollPerson(bootcampId, personInfo))
                 .map(reportMapper::toResponse)
                 .flatMap(dto -> ServerResponse.ok()
                         .contentType(MediaType.APPLICATION_JSON)

@@ -6,5 +6,7 @@ import reactor.core.publisher.Mono;
 
 public interface ReportRepository extends ReactiveMongoRepository<ReportDocument, String> {
 
+    Mono<ReportDocument> findByBootcampId(Long bootcampId);
+
     Mono<ReportDocument> findTopByOrderByEnrolledPersonCountDesc();
 }

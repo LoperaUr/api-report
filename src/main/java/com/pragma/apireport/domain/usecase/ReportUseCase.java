@@ -1,9 +1,15 @@
 package com.pragma.apireport.domain.usecase;
 
 import com.pragma.apireport.domain.api.ReportServicePort;
+import com.pragma.apireport.domain.exceptions.BusinessException;
+import com.pragma.apireport.domain.exceptions.ErrorMessages;
+import com.pragma.apireport.domain.model.PersonInfo;
 import com.pragma.apireport.domain.model.Report;
 import com.pragma.apireport.domain.spi.ReportPersistencePort;
 import reactor.core.publisher.Mono;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class ReportUseCase implements ReportServicePort {
 
@@ -15,13 +21,26 @@ public class ReportUseCase implements ReportServicePort {
 
     @Override
     public Mono<Report> save(Report report) {
-        // TODO: implement save logic
-        return Mono.empty();
+        report.setEnrolledPersonCount(0);
+        report.setEnrolledPersons(new ArrayList<>());
+        report.setCreatedAt(LocalDateTime.now());
+        return reportPersistencePort.save(report);
+    }
+
+    @Override
+    public Mono<Report> enrollPerson(Long bootcampId, PersonInfo personInfo) {
+        return reportPersistencePort.findByBootcampId(bootcampId)
+                .switchIfEmpty(Mono.error(new BusinessException(ErrorMessages.REPORT_NOT_FOUND)))
+                .flatMap(report -> {
+                    report.getEnrolledPersons().add(personInfo);
+                    report.setEnrolledPersonCount(report.getEnrolledPersons().size());
+                    return reportPersistencePort.save(report);
+                });
     }
 
     @Override
     public Mono<Report> findBootcampWithMostEnrolledPersons() {
-        // TODO: implement query logic
-        return Mono.empty();
+        return reportPersistencePort.findTopByOrderByEnrolledPersonCountDesc()
+                .switchIfEmpty(Mono.error(new BusinessException(ErrorMessages.REPORT_NOT_FOUND)));
     }
 }

@@ -8,13 +8,25 @@ import java.util.List;
 @Data
 public class ReportRequest {
 
+    private Long bootcampId;
     private String bootcampName;
     private String bootcampDescription;
     private LocalDate bootcampLaunchDate;
     private Integer bootcampDuration;
     private Integer capabilityCount;
     private Integer technologyCount;
-    private Integer enrolledPersonCount;
-    private List<String> capabilityNames;
-    private List<String> technologyNames;
+    private List<CapabilityInfoDTO> capabilities;
+    private List<TechnologyInfoDTO> technologies;
+
+    @Data
+    public static class CapabilityInfoDTO {
+        private Long id;
+        private String name;
+    }
+
+    @Data
+    public static class TechnologyInfoDTO {
+        private Long id;
+        private String name;
+    }
 }
